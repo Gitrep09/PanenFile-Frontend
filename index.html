@@ -2,15 +2,12 @@
 <html lang="id-ID" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0a0a0a">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="PanenFile - Video Downloader Multi-Platform">
     <title>PanenFile • Enterprise Video Downloader</title>
 
-    <script src="https://cdn.tailwindcss.com" defer></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
     <style>
@@ -22,236 +19,163 @@
             --tg-theme-button-color: #10b981;
             --tg-theme-button-text-color: #0a0a0a;
             --tg-theme-secondary-bg-color: #1e1e1e;
-            
-            --radius-soft: 12px;
             --radius-medium: 18px;
-            --radius-hard: 24px;
-            --radius-pill: 9999px;
-            --transition-fast: 0.2s cubic-bezier(0.25, 0.8, 0.25, 1.2);
-            --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            
-            --z-sticky: 80;
-            --z-overlay: 100;
-            --z-modal: 200;
-            --z-toast: 300;
             --z-splash: 999;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        html, body { width: 100%; height: 100%; overflow-x: hidden; background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); }
-        ::-webkit-scrollbar { display: none; }
-
-        @keyframes bounceIn { 0% { transform: scale(0.6); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes mainUIFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes spinLoader { to { transform: rotate(360deg); } }
-        @keyframes shimmerProgress { to { background-position: 200% 0; } }
-
-        #splash-screen { position: fixed; inset: 0; z-index: var(--z-splash); display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: var(--tg-theme-bg-color); transition: opacity 0.5s; }
-        #splash-logo { width: 120px; height: 120px; border-radius: 24px; animation: bounceIn 0.8s forwards; }
-        #splash-spinner { margin-top: 24px; width: 40px; height: 40px; border: 3px solid var(--tg-theme-secondary-bg-color); border-top-color: var(--tg-theme-button-color); border-radius: 50%; animation: spinLoader 0.8s linear infinite; }
-
-        #main-app { display: none; flex-direction: column; min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 16px 20px; animation: mainUIFadeIn 0.5s ease forwards; }
-        #main-app.visible { display: flex; }
-
-        .url-input-container { display: flex; align-items: center; background: var(--tg-theme-secondary-bg-color); border-radius: var(--radius-medium); padding: 4px; border: 2px solid transparent; transition: border 0.2s; }
-        .url-input-container:focus-within { border-color: var(--tg-theme-button-color); }
-        .main-url-input { flex: 1; border: none; background: transparent; padding: 16px; font-size: 15px; color: var(--tg-theme-text-color); outline: none; }
-        .clipboard-btn { background: transparent; border: none; color: var(--tg-theme-link-color); padding: 12px; font-size: 18px; cursor: pointer; }
-
-        .resolution-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 10px; margin-top: 12px; }
-        .resolution-chip { padding: 10px 8px; border-radius: var(--radius-soft); border: 2px solid var(--tg-theme-secondary-bg-color); background: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); font-weight: 600; font-size: 13px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .resolution-chip.selected { border-color: var(--tg-theme-button-color); background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); }
-
-        .html-download-btn { width: 100%; padding: 16px; border-radius: var(--radius-medium); font-weight: 700; font-size: 16px; border: none; cursor: pointer; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); margin-top: 24px; transition: 0.2s; }
-        .html-download-btn:disabled { opacity: 0.5; pointer-events: none; }
+        body { background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); overflow-x: hidden; }
         
-        .visual-progress-container { width: 100%; height: 6px; background: var(--tg-theme-secondary-bg-color); border-radius: var(--radius-pill); overflow: hidden; margin-top: 8px; display: none; }
-        .visual-progress-fill { height: 100%; width: 0%; background: var(--tg-theme-button-color); transition: width 0.3s; }
+        #splash-screen { position: fixed; inset: 0; z-index: var(--z-splash); display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: var(--tg-theme-bg-color); transition: opacity 0.5s; }
+        #splash-logo { width: 120px; height: 120px; border-radius: 24px; animation: bounce 1s infinite alternate; }
+        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.1); } }
 
-        #environment-badge { position: fixed; bottom: 16px; left: 16px; font-size: 11px; padding: 6px 12px; border-radius: var(--radius-pill); background: var(--tg-theme-secondary-bg-color); color: var(--tg-theme-hint-color); }
+        #main-app { display: none; opacity: 0; transition: opacity 0.5s; flex-direction: column; min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 20px; }
+        #main-app.visible { display: flex; opacity: 1; }
+
+        .input-box { display: flex; align-items: center; background: var(--tg-theme-secondary-bg-color); border-radius: var(--radius-medium); padding: 4px; border: 2px solid transparent; transition: 0.2s; }
+        .input-box:focus-within { border-color: var(--tg-theme-button-color); }
+        .main-input { flex: 1; border: none; background: transparent; padding: 16px; font-size: 15px; color: var(--tg-theme-text-color); outline: none; }
+        
+        .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 12px; }
+        .res-chip { padding: 12px 8px; border-radius: 12px; border: 2px solid var(--tg-theme-secondary-bg-color); background: transparent; color: var(--tg-theme-text-color); font-weight: 600; font-size: 13px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .res-chip.selected { border-color: var(--tg-theme-button-color); background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); }
+
+        .dl-btn { width: 100%; padding: 18px; border-radius: var(--radius-medium); font-weight: 700; font-size: 16px; border: none; cursor: pointer; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); margin-top: 30px; transition: 0.2s; }
+        .dl-btn:disabled { opacity: 0.4; transform: scale(0.98); }
+
+        #env-badge { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); font-size: 10px; padding: 5px 12px; border-radius: 20px; background: var(--tg-theme-secondary-bg-color); color: var(--tg-theme-hint-color); }
     </style>
 </head>
 <body>
 
 <div id="splash-screen">
     <img id="splash-logo" src="https://dl.dropbox.com/scl/fi/w6nl3b1kcm4jtsblsg2k1/1779056869501.png?rlkey=o3g85l6v19dqvj8twm9gbgkh8&st=qde9zvqy&dl=1" alt="Logo">
-    <div id="splash-spinner"></div>
+    <div style="margin-top:20px; border: 3px solid #1e1e1e; border-top-color: #10b981; width:30px; height:30px; border-radius:50%; animation: spin 0.8s linear infinite;"></div>
 </div>
 
 <div id="main-app">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;">
-        <i class="fa-solid fa-cloud-arrow-down" style="font-size:24px;color:var(--tg-theme-link-color);"></i>
-        <h1 style="font-size:22px;font-weight:800;color:var(--tg-theme-text-color);">PanenFile</h1>
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:30px;">
+        <i class="fa-solid fa-cloud-arrow-down" style="font-size:28px; color:var(--tg-theme-link-color);"></i>
+        <h1 style="font-size:24px; font-weight:800;">PanenFile</h1>
     </div>
 
-    <label style="font-weight:600;font-size:13px;color:var(--tg-theme-hint-color);margin-bottom:8px;">Tempel tautan video</label>
-    <div class="url-input-container">
-        <input type="url" id="input-main-url" class="main-url-input" placeholder="https://youtube.com/watch?v=..." autocomplete="off">
-        <button class="clipboard-btn" id="btn-clipboard"><i class="fa-solid fa-paste"></i></button>
-        <button class="clipboard-btn" id="btn-clear-url" style="display:none;"><i class="fa-solid fa-xmark"></i></button>
+    <label style="font-weight:600; font-size:13px; color:var(--tg-theme-hint-color); margin-bottom:8px; display:block;">Tempel tautan video</label>
+    <div class="input-box">
+        <input type="url" id="input-url" class="main-input" placeholder="YouTube, TikTok, IG, X, FB..." autocomplete="off">
+        <button id="btn-paste" style="background:none; border:none; color:var(--tg-theme-link-color); padding:12px; font-size:18px;"><i class="fa-solid fa-paste"></i></button>
     </div>
-    <p id="helper-detection-text" style="font-size:12px;color:var(--tg-theme-link-color);margin-top:8px;min-height:16px;font-weight:600;"></p>
+    
+    <p id="platform-info" style="font-size:12px; color:var(--tg-theme-link-color); margin-top:10px; font-weight:700; min-height:18px;"></p>
 
-    <div style="margin-top:24px;">
-        <p style="font-weight:600;font-size:13px;color:var(--tg-theme-hint-color);">Pilih Resolusi</p>
-        <div class="resolution-grid" id="resolution-grid-container"></div>
+    <div style="margin-top:25px;">
+        <p style="font-weight:600; font-size:13px; color:var(--tg-theme-hint-color); margin-bottom:10px;">Pilih Resolusi</p>
+        <div class="res-grid" id="res-grid"></div>
     </div>
 
-    <div class="visual-progress-container" id="visual-progress-container"><div class="visual-progress-fill" id="visual-progress-fill"></div></div>
-
-    <button id="html-download-btn" class="html-download-btn" disabled>Unduh Sekarang</button>
-    <div id="environment-badge">Mendeteksi...</div>
+    <button id="btn-download" class="dl-btn" disabled>Unduh Sekarang</button>
+    
+    <div id="env-badge">Mendeteksi Sistem...</div>
 </div>
 
 <script>
-    // PERBAIKAN 1: Deteksi Telegram yang Benar (Tidak bergantung pada initDataUnsafe.user)
-    const TelegramWebAppInstance = window.Telegram?.WebApp || null;
-    const isRunningInsideTelegram = TelegramWebAppInstance && TelegramWebAppInstance.platform && TelegramWebAppInstance.platform !== "unknown";
+    const tg = window.Telegram?.WebApp || null;
+    const isTg = tg && tg.platform && tg.platform !== "unknown";
 
-    if (isRunningInsideTelegram) {
-        TelegramWebAppInstance.ready();
-        TelegramWebAppInstance.expand();
-        applyTheme();
+    if (isTg) {
+        tg.ready();
+        tg.expand();
+        // Terapkan warna tema Telegram
+        const p = tg.themeParams;
+        if(p.bg_color) document.documentElement.style.setProperty('--tg-theme-bg-color', p.bg_color);
+        if(p.button_color) document.documentElement.style.setProperty('--tg-theme-button-color', p.button_color);
     }
 
-    document.getElementById('environment-badge').textContent = isRunningInsideTelegram ? '📱 Berjalan di Telegram' : '🌐 Browser (Mode Uji Coba)';
-    document.getElementById('environment-badge').style.color = isRunningInsideTelegram ? 'var(--tg-theme-link-color)' : 'var(--tg-theme-hint-color)';
+    document.getElementById('env-badge').textContent = isTg ? '📱 Berjalan di Telegram' : '🌐 Mode Browser';
 
-    let state = { url: '', platform: null, resolution: '', downloading: false };
+    let state = { url: '', platform: null, resolution: '' };
 
-    // Logika Deteksi Platform
+    // FIX: Radar deteksi platform lengkap (YouTube, IG, TikTok, Bilibili, X, FB)
     function detectPlatform(url) {
         const u = url.toLowerCase();
         if (u.includes('youtube.com') || u.includes('youtu.be')) return 'youtube';
         if (u.includes('instagram.com')) return 'instagram';
         if (u.includes('tiktok.com')) return 'tiktok';
         if (u.includes('bilibili.com')) return 'bilibili';
+        if (u.includes('x.com') || u.includes('twitter.com')) return 'twitter';
+        if (u.includes('facebook.com') || u.includes('fb.watch')) return 'facebook';
         return null;
     }
 
-    // Update UI berdasarkan State
-    function renderUI() {
-        document.getElementById('btn-clear-url').style.display = state.url ? 'block' : 'none';
+    function render() {
+        state.platform = detectPlatform(state.url);
+        const info = document.getElementById('platform-info');
         
-        // Helper text
-        const hText = document.getElementById('helper-detection-text');
-        if (state.platform === 'youtube') hText.innerHTML = '<i class="fa-brands fa-youtube"></i> YouTube terdeteksi';
-        else if (state.platform === 'instagram') hText.innerHTML = '<i class="fa-brands fa-instagram"></i> Instagram terdeteksi';
-        else if (state.platform === 'tiktok') hText.innerHTML = '<i class="fa-brands fa-tiktok"></i> TikTok terdeteksi';
-        else if (state.platform === 'bilibili') hText.innerHTML = '<i class="fa-solid fa-tv"></i> Bilibili terdeteksi';
-        else hText.innerHTML = '';
+        // Update Tampilan Radar
+        const icons = {
+            youtube: '<i class="fa-brands fa-youtube"></i> YouTube Terdeteksi',
+            instagram: '<i class="fa-brands fa-instagram"></i> Instagram Terdeteksi',
+            tiktok: '<i class="fa-brands fa-tiktok"></i> TikTok Terdeteksi',
+            bilibili: '<i class="fa-solid fa-tv"></i> Bilibili Terdeteksi',
+            twitter: '<i class="fa-brands fa-x-twitter"></i> X / Twitter Terdeteksi',
+            facebook: '<i class="fa-brands fa-facebook"></i> Facebook Terdeteksi'
+        };
+        info.innerHTML = icons[state.platform] || '';
 
-        // Resolusi Grid
-        const grid = document.getElementById('resolution-grid-container');
-        const resList = state.platform ? ['480p','720p','1080p'] : []; // Disederhanakan untuk contoh
-        if(state.platform === 'youtube') resList.push('1440p', '4K');
-        
+        // Update Grid Resolusi
+        const grid = document.getElementById('res-grid');
         grid.innerHTML = '';
-        resList.forEach(r => {
+        const options = state.platform ? ['480p', '720p', '1080p'] : [];
+        if(state.platform === 'youtube') options.push('1440p', '4K');
+
+        options.forEach(opt => {
             const btn = document.createElement('button');
-            btn.className = `resolution-chip ${state.resolution === r ? 'selected' : ''}`;
-            btn.textContent = r;
-            btn.onclick = () => { state.resolution = r; renderUI(); };
+            btn.className = `res-chip ${state.resolution === opt ? 'selected' : ''}`;
+            btn.textContent = opt;
+            btn.onclick = () => { state.resolution = opt; render(); };
             grid.appendChild(btn);
         });
 
-        // Tombol Download
-        const btnDL = document.getElementById('html-download-btn');
-        const isValid = state.url && state.platform && state.resolution;
-        btnDL.disabled = !isValid || state.downloading;
-        btnDL.textContent = state.downloading ? 'Mengirim data...' : 'Unduh Sekarang';
-
-        // Update MainButton Telegram jika ada
-        if (isRunningInsideTelegram && TelegramWebAppInstance.MainButton) {
-            const mb = TelegramWebAppInstance.MainButton;
-            if (isValid && !state.downloading) {
-                mb.setText('UNDUH SEKARANG');
-                mb.enable(); mb.show();
-            } else {
-                mb.hide();
-            }
-        }
+        // Update Tombol Utama
+        const btn = document.getElementById('btn-download');
+        btn.disabled = !(state.url && state.platform && state.resolution);
     }
 
-    // Event Listeners Input
-    document.getElementById('input-main-url').addEventListener('input', e => {
+    document.getElementById('input-url').addEventListener('input', (e) => {
         state.url = e.target.value;
-        state.platform = detectPlatform(state.url);
-        state.resolution = ''; // Reset resolusi saat link diganti
-        renderUI();
+        render();
     });
 
-    document.getElementById('btn-clear-url').addEventListener('click', () => {
-        document.getElementById('input-main-url').value = '';
-        state.url = ''; state.platform = null; state.resolution = '';
-        renderUI();
-    });
+    document.getElementById('btn-paste').onclick = async () => {
+        const text = await navigator.clipboard.readText();
+        if(text) {
+            document.getElementById('input-url').value = text;
+            state.url = text;
+            render();
+        }
+    };
 
-    document.getElementById('btn-clipboard').addEventListener('click', async () => {
-        try {
-            const text = await navigator.clipboard.readText();
-            if(text) {
-                document.getElementById('input-main-url').value = text;
-                state.url = text; state.platform = detectPlatform(text); state.resolution = '';
-                renderUI();
-            }
-        } catch(e) {}
-    });
-
-    // PERBAIKAN 2: Logika Pengiriman Data (Eksekusi Cepat tanpa Fake Loading kelamaan)
-    async function processDownload() {
-        if (!state.url || !state.resolution || state.downloading) return;
-        state.downloading = true; renderUI();
-
-        document.getElementById('visual-progress-container').style.display = 'block';
-        document.getElementById('visual-progress-fill').style.width = '100%';
-
-        // Jeda animasi sekejap agar terlihat mulus
-        await new Promise(r => setTimeout(r, 600));
-
-        // Format data yang diminta bot Python kamu
-        const payloadData = {
-            url: state.url,
-            resolution: state.resolution
-        };
-
-        if (isRunningInsideTelegram) {
-            // MENGIRIM DATA DAN MENUTUP MINI APP SECARA OTOMATIS
-            TelegramWebAppInstance.sendData(JSON.stringify(payloadData));
+    // FUNGSI KRUSIAL: Mengirim data ke Bot & Menutup Jendela
+    document.getElementById('btn-download').onclick = () => {
+        const payload = { url: state.url, resolution: state.resolution };
+        
+        if (isTg) {
+            tg.sendData(JSON.stringify(payload));
         } else {
-            // Jika dites di Browser biasa
-            alert("✅ DATA BERHASIL DIKIRIM!\n\n(Ini mode browser. Jika di Telegram, jendela ini akan otomatis tertutup dan bot akan memproses video).");
-            state.downloading = false; 
-            document.getElementById('visual-progress-container').style.display = 'none';
-            document.getElementById('visual-progress-fill').style.width = '0%';
-            renderUI();
+            alert("Berhasil! (Browser Mode)\nData: " + JSON.stringify(payload));
         }
-    }
+    };
 
-    document.getElementById('html-download-btn').addEventListener('click', processDownload);
-    if(TelegramWebAppInstance?.MainButton) TelegramWebAppInstance.MainButton.onClick(processDownload);
-
-    // Styling Otomatis dari Tema Telegram
-    function applyTheme() {
-        const p = TelegramWebAppInstance.themeParams;
-        if(p && p.bg_color) {
-            document.documentElement.style.setProperty('--tg-theme-bg-color', p.bg_color);
-            document.documentElement.style.setProperty('--tg-theme-text-color', p.text_color);
-            document.documentElement.style.setProperty('--tg-theme-hint-color', p.hint_color);
-            document.documentElement.style.setProperty('--tg-theme-link-color', p.link_color);
-            document.documentElement.style.setProperty('--tg-theme-button-color', p.button_color);
-            document.documentElement.style.setProperty('--tg-theme-button-text-color', p.button_text_color);
-            document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', p.secondary_bg_color);
-        }
-    }
-
-    // Hilangkan Splash Screen saat dimuat
+    // Splash Screen Timer
     setTimeout(() => {
         document.getElementById('splash-screen').style.opacity = '0';
-        setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 500);
-        document.getElementById('main-app').classList.add('visible');
-    }, 1200);
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('main-app').classList.add('visible');
+        }, 500);
+    }, 1500);
 
 </script>
+<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 </body>
 </html>
