@@ -1,181 +1,292 @@
 <!DOCTYPE html>
-<html lang="id-ID" data-theme="dark">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0a0a0a">
-    <title>PanenFile • Enterprise Video Downloader</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PanenFile - The Final Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --tg-theme-bg-color: #0a0a0a;
-            --tg-theme-text-color: #f0f0f0;
-            --tg-theme-hint-color: #9e9e9e;
-            --tg-theme-link-color: #4ade80;
-            --tg-theme-button-color: #10b981;
-            --tg-theme-button-text-color: #0a0a0a;
-            --tg-theme-secondary-bg-color: #1e1e1e;
-            --radius-medium: 18px;
-            --z-splash: 999;
+            --primary: #32CD32; 
+            --bg: #000000;      
+            --surface: #121212; 
+            --text: #ffffff;
+            --accent: #1e1e1e;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); overflow-x: hidden; }
-        
-        #splash-screen { position: fixed; inset: 0; z-index: var(--z-splash); display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: var(--tg-theme-bg-color); transition: opacity 0.5s; }
-        #splash-logo { width: 120px; height: 120px; border-radius: 24px; animation: bounce 1s infinite alternate; }
-        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.1); } }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-        #main-app { display: none; opacity: 0; transition: opacity 0.5s; flex-direction: column; min-height: 100vh; max-width: 480px; margin: 0 auto; padding: 20px; }
-        #main-app.visible { display: flex; opacity: 1; }
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            overflow: hidden;
+        }
 
-        .input-box { display: flex; align-items: center; background: var(--tg-theme-secondary-bg-color); border-radius: var(--radius-medium); padding: 4px; border: 2px solid transparent; transition: 0.2s; }
-        .input-box:focus-within { border-color: var(--tg-theme-button-color); }
-        .main-input { flex: 1; border: none; background: transparent; padding: 16px; font-size: 15px; color: var(--tg-theme-text-color); outline: none; }
-        
-        .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; margin-top: 12px; }
-        .res-chip { padding: 12px 8px; border-radius: 12px; border: 2px solid var(--tg-theme-secondary-bg-color); background: transparent; color: var(--tg-theme-text-color); font-weight: 600; font-size: 13px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .res-chip.selected { border-color: var(--tg-theme-button-color); background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); }
+        /* --- SPLASH SCREEN --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        .splash-logo { width: 150px; animation: logoIntro 1.5s ease-out forwards; filter: drop-shadow(0 0 20px var(--primary)); }
+        .splash-text { margin-top: 20px; color: var(--primary); font-weight: bold; letter-spacing: 5px; text-transform: uppercase; opacity: 0; animation: fadeIn 1s ease-in 0.8s forwards; }
 
-        .dl-btn { width: 100%; padding: 18px; border-radius: var(--radius-medium); font-weight: 700; font-size: 16px; border: none; cursor: pointer; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); margin-top: 30px; transition: 0.2s; }
-        .dl-btn:disabled { opacity: 0.4; transform: scale(0.98); }
+        @keyframes logoIntro { 0% { transform: scale(0.3); opacity: 0; } 70% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        .fade-out { opacity: 0; visibility: hidden; }
 
-        #env-badge { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); font-size: 10px; padding: 5px 12px; border-radius: 20px; background: var(--tg-theme-secondary-bg-color); color: var(--tg-theme-hint-color); }
+        /* --- MAIN APP --- */
+        #main-app {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .app-visible { opacity: 1 !important; }
+
+        .header { text-align: center; margin-bottom: 24px; }
+        .header img { width: 80px; filter: drop-shadow(0 0 10px var(--primary)); }
+        .header h1 { color: var(--primary); font-size: 24px; margin: 10px 0 0; text-transform: uppercase; letter-spacing: 2px; }
+
+        .card {
+            background-color: var(--surface);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 16px;
+        }
+
+        .label { display: block; margin-bottom: 8px; font-size: 14px; color: #888; }
+
+        .input-group { position: relative; margin-bottom: 20px; }
+        input[type="text"] {
+            width: 100%; background: var(--bg); border: 2px solid var(--accent);
+            border-radius: 12px; padding: 14px 45px 14px 14px; color: white;
+            font-size: 16px; outline: none; transition: 0.3s;
+        }
+        input[type="text"]:focus { border-color: var(--primary); }
+        .input-group i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); transition: 0.3s; }
+
+        /* DYNAMIC RESOLUTION GRID */
+        .res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+        .res-item {
+            background: var(--bg); border: 1px solid var(--accent); padding: 12px;
+            border-radius: 10px; text-align: center; cursor: pointer; font-weight: bold;
+            transition: 0.3s; color: #666;
+        }
+        .res-item.active { background: var(--primary); color: var(--bg); border-color: var(--primary); transform: scale(1.05); }
+        .res-item.available { color: white; border-color: #333; }
+
+        .btn-panen {
+            width: 100%; background-color: var(--primary); color: var(--bg);
+            border: none; border-radius: 12px; padding: 16px; font-size: 16px;
+            font-weight: 800; cursor: pointer; text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .btn-panen:disabled { background-color: #333; color: #555; }
+
+        #progress-box { display: none; margin-top: 15px; text-align: center; }
+        .progress-bar-bg { background: var(--bg); height: 8px; border-radius: 4px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { background: var(--primary); width: 0%; height: 100%; transition: width 0.3s; box-shadow: 0 0 10px var(--primary); }
+        .status-text { font-size: 12px; color: var(--primary); font-family: monospace; }
+
+        .history-title { width: 100%; max-width: 400px; display: flex; justify-content: space-between; color: #888; font-size: 14px; margin-bottom: 10px; padding: 0 5px; }
+        .history-list { width: 100%; max-width: 400px; }
+        .history-item {
+            background: var(--surface); padding: 12px; border-radius: 10px; margin-bottom: 8px;
+            display: flex; align-items: center; font-size: 13px; border-left: 3px solid var(--primary);
+            cursor: pointer;
+        }
+        .history-item i { margin-right: 10px; color: var(--primary); }
+
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-<div id="splash-screen">
-    <img id="splash-logo" src="https://dl.dropbox.com/scl/fi/w6nl3b1kcm4jtsblsg2k1/1779056869501.png?rlkey=o3g85l6v19dqvj8twm9gbgkh8&st=qde9zvqy&dl=1" alt="Logo">
-    <div style="margin-top:20px; border: 3px solid #1e1e1e; border-top-color: #10b981; width:30px; height:30px; border-radius:50%; animation: spin 0.8s linear infinite;"></div>
-</div>
-
-<div id="main-app">
-    <div style="display:flex; align-items:center; gap:12px; margin-bottom:30px;">
-        <i class="fa-solid fa-cloud-arrow-down" style="font-size:28px; color:var(--tg-theme-link-color);"></i>
-        <h1 style="font-size:24px; font-weight:800;">PanenFile</h1>
+    <div id="splash-screen">
+        <img src="https://dl.dropbox.com/scl/fi/id00rjzt9bwb1mo0elvlg/1779085439593.png?rlkey=kbl6sc0m6goxn1jh79h4dr4ix&st=kn9b7eta&dl=1" class="splash-logo">
+        <div class="splash-text">PanenFile</div>
     </div>
 
-    <label style="font-weight:600; font-size:13px; color:var(--tg-theme-hint-color); margin-bottom:8px; display:block;">Tempel tautan video</label>
-    <div class="input-box">
-        <input type="url" id="input-url" class="main-input" placeholder="YouTube, TikTok, IG, X, FB..." autocomplete="off">
-        <button id="btn-paste" style="background:none; border:none; color:var(--tg-theme-link-color); padding:12px; font-size:18px;"><i class="fa-solid fa-paste"></i></button>
+    <div id="main-app">
+        <div class="header">
+            <img src="https://dl.dropbox.com/scl/fi/id00rjzt9bwb1mo0elvlg/1779085439593.png?rlkey=kbl6sc0m6goxn1jh79h4dr4ix&st=kn9b7eta&dl=1" alt="Logo">
+            <h1>PanenFile</h1>
+        </div>
+
+        <div class="card">
+            <span class="label">Link Video (TikTok/IG/X/FB)</span>
+            <div class="input-group">
+                <input type="text" id="videoUrl" placeholder="Tempel link di sini..." autocomplete="off">
+                <i id="linkIcon" class="fas fa-link"></i>
+            </div>
+
+            <span class="label" id="resLabel">Resolusi Tersedia</span>
+            <div class="res-grid" id="resGrid">
+                </div>
+
+            <button class="btn-panen" id="btnPanen">Mulai Panen</button>
+
+            <div id="progress-box">
+                <div class="status-text" id="statusLabel">Menganalisis...</div>
+                <div class="progress-bar-bg">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <div class="status-text" id="statusPercent">0%</div>
+            </div>
+        </div>
+
+        <div class="history-title">
+            <span>Riwayat Panen</span>
+            <span onclick="clearHistory()" style="color:var(--primary); cursor:pointer;">Hapus</span>
+        </div>
+        <div class="history-list" id="historyList"></div>
     </div>
-    
-    <p id="platform-info" style="font-size:12px; color:var(--tg-theme-link-color); margin-top:10px; font-weight:700; min-height:18px;"></p>
 
-    <div style="margin-top:25px;">
-        <p style="font-weight:600; font-size:13px; color:var(--tg-theme-hint-color); margin-bottom:10px;">Pilih Resolusi</p>
-        <div class="res-grid" id="res-grid"></div>
-    </div>
-
-    <button id="btn-download" class="dl-btn" disabled>Unduh Sekarang</button>
-    
-    <div id="env-badge">Mendeteksi Sistem...</div>
-</div>
-
-<script>
-    const tg = window.Telegram?.WebApp || null;
-    const isTg = tg && tg.platform && tg.platform !== "unknown";
-
-    if (isTg) {
-        tg.ready();
+    <script>
+        const tg = window.Telegram.WebApp;
         tg.expand();
-        // Terapkan warna tema Telegram
-        const p = tg.themeParams;
-        if(p.bg_color) document.documentElement.style.setProperty('--tg-theme-bg-color', p.bg_color);
-        if(p.button_color) document.documentElement.style.setProperty('--tg-theme-button-color', p.button_color);
-    }
 
-    document.getElementById('env-badge').textContent = isTg ? '📱 Berjalan di Telegram' : '🌐 Mode Browser';
+        let selectedRes = "";
+        const urlInput = document.getElementById('videoUrl');
+        const resGrid = document.getElementById('resGrid');
+        const linkIcon = document.getElementById('linkIcon');
 
-    let state = { url: '', platform: null, resolution: '' };
-
-    // FIX: Radar deteksi platform lengkap (YouTube, IG, TikTok, Bilibili, X, FB)
-    function detectPlatform(url) {
-        const u = url.toLowerCase();
-        if (u.includes('youtube.com') || u.includes('youtu.be')) return 'youtube';
-        if (u.includes('instagram.com')) return 'instagram';
-        if (u.includes('tiktok.com')) return 'tiktok';
-        if (u.includes('bilibili.com')) return 'bilibili';
-        if (u.includes('x.com') || u.includes('twitter.com')) return 'twitter';
-        if (u.includes('facebook.com') || u.includes('fb.watch')) return 'facebook';
-        return null;
-    }
-
-    function render() {
-        state.platform = detectPlatform(state.url);
-        const info = document.getElementById('platform-info');
-        
-        // Update Tampilan Radar
-        const icons = {
-            youtube: '<i class="fa-brands fa-youtube"></i> YouTube Terdeteksi',
-            instagram: '<i class="fa-brands fa-instagram"></i> Instagram Terdeteksi',
-            tiktok: '<i class="fa-brands fa-tiktok"></i> TikTok Terdeteksi',
-            bilibili: '<i class="fa-solid fa-tv"></i> Bilibili Terdeteksi',
-            twitter: '<i class="fa-brands fa-x-twitter"></i> X / Twitter Terdeteksi',
-            facebook: '<i class="fa-brands fa-facebook"></i> Facebook Terdeteksi'
+        // Database Resolusi per Platform
+        const platformConfig = {
+            tiktok: ["360p", "576p", "720p", "1080p"],
+            instagram: ["720p", "1080p"],
+            twitter: ["360p", "720p"],
+            x: ["360p", "720p"],
+            facebook: ["360p", "720p", "1080p"],
+            default: ["360p", "720p", "1080p", "4K"]
         };
-        info.innerHTML = icons[state.platform] || '';
 
-        // Update Grid Resolusi
-        const grid = document.getElementById('res-grid');
-        grid.innerHTML = '';
-        const options = state.platform ? ['480p', '720p', '1080p'] : [];
-        if(state.platform === 'youtube') options.push('1440p', '4K');
-
-        options.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = `res-chip ${state.resolution === opt ? 'selected' : ''}`;
-            btn.textContent = opt;
-            btn.onclick = () => { state.resolution = opt; render(); };
-            grid.appendChild(btn);
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('fade-out');
+                document.getElementById('main-app').classList.add('app-visible');
+            }, 2500);
+            updateResGrid('default'); // Load default res
+            renderHistory();
         });
 
-        // Update Tombol Utama
-        const btn = document.getElementById('btn-download');
-        btn.disabled = !(state.url && state.platform && state.resolution);
-    }
+        // Deteksi Perubahan Link
+        urlInput.addEventListener('input', (e) => {
+            const url = e.target.value.toLowerCase();
+            let platform = 'default';
 
-    document.getElementById('input-url').addEventListener('input', (e) => {
-        state.url = e.target.value;
-        render();
-    });
+            if (url.includes('tiktok.com')) { platform = 'tiktok'; linkIcon.className = 'fab fa-tiktok'; }
+            else if (url.includes('instagram.com')) { platform = 'instagram'; linkIcon.className = 'fab fa-instagram'; }
+            else if (url.includes('facebook.com') || url.includes('fb.watch')) { platform = 'facebook'; linkIcon.className = 'fab fa-facebook'; }
+            else if (url.includes('twitter.com') || url.includes('x.com')) { platform = 'x'; linkIcon.className = 'fab fa-twitter'; }
+            else { platform = 'default'; linkIcon.className = 'fas fa-link'; }
 
-    document.getElementById('btn-paste').onclick = async () => {
-        const text = await navigator.clipboard.readText();
-        if(text) {
-            document.getElementById('input-url').value = text;
-            state.url = text;
-            render();
+            updateResGrid(platform);
+        });
+
+        function updateResGrid(platform) {
+            resGrid.innerHTML = '';
+            const options = platformConfig[platform];
+            
+            options.forEach((res, index) => {
+                const item = document.createElement('div');
+                item.className = 'res-item available';
+                if (res === "720p" || options.length === 1) { 
+                    item.classList.add('active'); 
+                    selectedRes = res; 
+                }
+                item.innerText = res;
+                item.onclick = () => {
+                    document.querySelectorAll('.res-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    selectedRes = res;
+                };
+                resGrid.appendChild(item);
+            });
         }
-    };
 
-    // FUNGSI KRUSIAL: Mengirim data ke Bot & Menutup Jendela
-    document.getElementById('btn-download').onclick = () => {
-        const payload = { url: state.url, resolution: state.resolution };
-        
-        if (isTg) {
-            tg.sendData(JSON.stringify(payload));
-        } else {
-            alert("Berhasil! (Browser Mode)\nData: " + JSON.stringify(payload));
+        document.getElementById('btnPanen').onclick = function() {
+            const url = urlInput.value.trim();
+            if(!url) return tg.showAlert("Masukkan link dulu!");
+            if(url.includes("youtube") || url.includes("youtu.be")) return tg.showAlert("YouTube tidak didukung.");
+
+            this.disabled = true;
+            document.getElementById('progress-box').style.display = 'block';
+            
+            let progress = 0;
+            const pb = document.getElementById('progressBar');
+            const sl = document.getElementById('statusLabel');
+            const sp = document.getElementById('statusPercent');
+
+            const timer = setInterval(() => {
+                progress += Math.floor(Math.random() * 7) + 1;
+                if(progress > 100) progress = 100;
+                pb.style.width = progress + "%";
+                sp.innerText = progress + "%";
+
+                if(progress < 30) sl.innerText = "🔍 Menganalisis Video...";
+                else if(progress < 70) sl.innerText = "🛡️ Menembus Proteksi " + selectedRes + "...";
+                else sl.innerText = "🚀 Mengirim ke PanenEngine...";
+
+                if(progress === 100) {
+                    clearInterval(timer);
+                    saveHistory(url);
+                    setTimeout(() => {
+                        tg.sendData(JSON.stringify({ url: url, resolution: selectedRes }));
+                        tg.close();
+                    }, 500);
+                }
+            }, 120);
+        };
+
+        function saveHistory(url) {
+            let h = JSON.parse(localStorage.getItem('h_panen') || '[]');
+            if(!h.includes(url)) {
+                h.unshift(url);
+                localStorage.setItem('h_panen', JSON.stringify(h.slice(0, 5)));
+                renderHistory();
+            }
         }
-    };
 
-    // Splash Screen Timer
-    setTimeout(() => {
-        document.getElementById('splash-screen').style.opacity = '0';
-        setTimeout(() => {
-            document.getElementById('splash-screen').style.display = 'none';
-            document.getElementById('main-app').classList.add('visible');
-        }, 500);
-    }, 1500);
+        function renderHistory() {
+            const h = JSON.parse(localStorage.getItem('h_panen') || '[]');
+            const container = document.getElementById('historyList');
+            container.innerHTML = h.length ? '' : '<p style="text-align:center;color:#444;font-size:12px;">Belum ada riwayat panen</p>';
+            h.forEach(u => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `<i class="fas fa-history"></i><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u}</span>`;
+                div.onclick = () => {
+                    urlInput.value = u;
+                    urlInput.dispatchEvent(new Event('input'));
+                };
+                container.appendChild(div);
+            });
+        }
 
-</script>
-<style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+        function clearHistory() {
+            localStorage.removeItem('h_panen');
+            renderHistory();
+        }
+    </script>
 </body>
 </html>
